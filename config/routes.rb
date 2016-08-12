@@ -1,11 +1,6 @@
 Rails.application.routes.draw do
-  get 'page/show'
-
-  get 'root_controller/Index'
-
-  root 'root#index'
-
-  get '*path' => 'page#show'
+  root 'page#show', via: [:get, :post]
+  match '*path', to: 'page#show', via: [:get, :post]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

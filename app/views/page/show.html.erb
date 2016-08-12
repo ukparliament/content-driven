@@ -1,2 +1,37 @@
-<h1>Page#show</h1>
-<p>Find me in app/views/page/show.html.erb</p>
+<h1><%= @data[:current_page][:slug] %></h1>
+
+<style>
+  ul.crumbtrail li {
+    list-style-type: none;
+    display: inline;
+  }
+
+  ul.crumbtrail li::before {
+    content: '/'
+  }
+
+  ul.crumbtrail li:first-child::before {
+    content: ''
+  }
+
+  ul.crumbtrail li:last-child a {
+    text-decoration: none;
+    color: inherit;
+    cursor: text;
+  }
+</style>
+<ul class="crumbtrail">
+  <% @data[:pages].each do |page| %>
+      <li>
+        <a href="<%= page[:path] %>"><%= page[:slug] == '' ? 'home' : page[:slug] %></a>
+      </li>
+  <% end %>
+</ul>
+
+<ul>
+  <%= render partial: 'tree', locals: {node: @data[:db].root} %>
+</ul>
+<%= form_tag do %>
+    <button>Go</button>
+<% end %>
+

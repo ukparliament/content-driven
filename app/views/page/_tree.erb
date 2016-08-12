@@ -1,0 +1,10 @@
+<li>
+  <a href="<%= node[:path] %>"><%= node[:slug] == '' ? 'home' : node[:slug] %></a>
+  <% unless node[:children].empty? %>
+      <ul>
+        <% node[:children].each do |child| %>
+            <%= render partial: 'tree', locals: {node: child} %>
+        <% end %>
+      </ul>
+  <% end %>
+</li>
