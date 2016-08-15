@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   root 'page#show', via: [:get, :post]
+
+  get 'sitemap.xml', to: 'sitemap#show'
+
   match '*path', to: 'page#show', via: [:get, :post]
 
   # The priority is based upon order of creation: first created -> highest priority.

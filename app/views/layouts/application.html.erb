@@ -4,8 +4,12 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+<%= breadcrumbs_json_ld params[:path] %>
+<%= breadcrumbs params[:path] %>
+<ul>
+  <%= navigation_menu %>
+</ul>
 
 <%= yield %>
-
 </body>
 </html>

@@ -3,7 +3,7 @@
   <% unless node[:children].empty? %>
       <ul>
         <% node[:children].each do |child| %>
-            <%= render partial: 'tree', locals: {node: child} %>
+            <%= render partial: 'shared/navigation_menu', locals: {node: child} %>
         <% end %>
       </ul>
   <% end %>

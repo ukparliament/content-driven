@@ -1,0 +1,7 @@
+<ul class="breadcrumbs">
+  <% pages.each do |page| %>
+      <li>
+        <a href="<%= page[:path] %>"><%= page[:slug] == '' ? 'home' : page[:slug] %></a>
+      </li>
+  <% end %>
+</ul>
