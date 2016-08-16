@@ -45,7 +45,7 @@ class DB
     end
 
     if pages.any? { |page| page.nil? }
-      raise 'Not Found'
+      raise ActionController::RoutingError.new('Path not found')
     end
 
     pages
