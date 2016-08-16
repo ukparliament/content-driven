@@ -1,20 +1,24 @@
-<http://example.com/page1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page1> <http://data.parliament.uk/schema/parl#slug> ''
-<http://example.com/page2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page2> <http://data.parliament.uk/schema/parl#slug> 'a'    
-<http://example.com/page2> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page1> 
-<http://example.com/page3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page3> <http://data.parliament.uk/schema/parl#slug> 'b'    
-<http://example.com/page3> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page2> 
-<http://example.com/page4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page4> <http://data.parliament.uk/schema/parl#slug> 'c'    
-<http://example.com/page4> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page2> 
-<http://example.com/page5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page5> <http://data.parliament.uk/schema/parl#slug> 'd'    
-<http://example.com/page5> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page3> 
-<http://example.com/page6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page3> <http://data.parliament.uk/schema/parl#slug> 'e'    
-<http://example.com/page6> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page5> 
-<http://example.com/page7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://data.parliament.uk/schema/parl#Page>     
-<http://example.com/page7> <http://data.parliament.uk/schema/parl#slug> 'f'    
-<http://example.com/page7> <http://data.parliament.uk/schema/parl#parent> <http://example.com/page6> 
+@base <http://example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix parl: <http://data.parliament.uk/schema/parl#> .
+
+<#page1> a parl:Page ;     
+		parl:slug '' .
+<#page2> a parl:Page ;     
+		parl:slug 'a' ;
+		parl:parent <#page1> .
+<#page3> a parl:Page ;     
+		parl:slug 'b' ; 
+		parl:parent <#page2> .
+<#page4> a parl:Page ;     
+		parl:slug 'c' ;
+		parl:parent <#page2> .
+<#page5> a parl:Page ;     
+		parl:slug 'd' ; 
+		parl:parent <#page3> .
+<#page6> a parl:Page ;     
+		parl:slug 'e' ;
+		parl:parent <#page5> .
+<#page7> a parl:Page ;     
+		parl:slug 'f' ;
+		parl:parent <#page6> .
