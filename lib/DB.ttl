@@ -1,24 +1,37 @@
-@base <http://example.org/> .
+@base <http://id.ukpds.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix parl: <http://data.parliament.uk/schema/parl#> .
 
-<#page1> a parl:Page ;     
-		parl:slug '' .
-<#page2> a parl:Page ;     
-		parl:slug 'a' ;
-		parl:parent <#page1> .
-<#page3> a parl:Page ;     
-		parl:slug 'b' ; 
-		parl:parent <#page2> .
-<#page4> a parl:Page ;     
-		parl:slug 'c' ;
-		parl:parent <#page2> .
-<#page5> a parl:Page ;     
-		parl:slug 'd' ; 
-		parl:parent <#page3> .
-<#page6> a parl:Page ;     
-		parl:slug 'e' ;
-		parl:parent <#page5> .
-<#page7> a parl:Page ;     
-		parl:slug 'f' ;
-		parl:parent <#page6> .
+<page1>
+	a parl:Page ;     
+	parl:slug '' .
+
+<page2>
+	a parl:Page ;     
+	parl:slug 'a' ;
+	parl:parent <page1> .
+
+<page3> 
+	a parl:Page ;     
+	parl:slug 'b' ; 
+	parl:parent <page2> .
+
+<page4> 
+	a parl:Page ;     
+	parl:slug 'c' ;
+	parl:parent <page2> .
+
+<page5> 
+	a parl:Page ;     
+	parl:slug 'd' ; 
+	parl:parent <page3> .
+
+<page6> 
+	a parl:Page ;     
+	parl:slug 'e' ;
+	parl:parent <page5> .
+
+<page7> 
+	a parl:Page ;     
+	parl:slug 'f' ;
+	parl:parent <page6> .

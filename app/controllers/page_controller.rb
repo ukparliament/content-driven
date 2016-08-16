@@ -10,7 +10,7 @@ class PageController < ApplicationController
 
       @data = {current_page: current_page}
     rescue
-      raise ActionController::RoutingError.new('Not Found')
+      # raise ActionController::RoutingError.new('Not Found')
     end
   end
 end
