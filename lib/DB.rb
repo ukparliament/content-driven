@@ -3,13 +3,13 @@ class DB
 
   def self.pages
     if @@pages.nil?
-      page1 = {slug: ''}
-      page2 = {slug: 'a', parent: page1}
-      page3 = {slug: 'b', parent: page2}
-      page4 = {slug: 'c', parent: page2}
-      page5 = {slug: 'd', parent: page3}
-      page6 = {slug: 'e', parent: page5}
-      page7 = {slug: 'f', parent: page6}
+      page1 = {slug: '', template: 'template1'}
+      page2 = {slug: 'a', parent: page1, template: 'template1'}
+      page3 = {slug: 'b', parent: page2, template: 'template1'}
+      page4 = {slug: 'c', parent: page2, template: 'template2'}
+      page5 = {slug: 'd', parent: page3, template: 'template2'}
+      page6 = {slug: 'e', parent: page5, template: 'template2'}
+      page7 = {slug: 'f', parent: page6, template: 'template1'}
       @@pages = [page1, page2, page3, page4, page5, page6, page7]
 
       @@pages.each do |page|
