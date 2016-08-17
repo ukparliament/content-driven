@@ -9,7 +9,26 @@
 <ul>
   <%= navigation_menu %>
 </ul>
+<style>
+  ul.breadcrumbs li {
+    list-style-type: none;
+    display: inline;
+  }
 
+  ul.breadcrumbs li::before {
+    content: '/'
+  }
+
+  ul.breadcrumbs li:first-child::before {
+    content: ''
+  }
+
+  ul.breadcrumbs li:last-child a {
+    text-decoration: none;
+    color: inherit;
+    cursor: text;
+  }
+</style>
 <%= yield %>
 </body>
 </html>
