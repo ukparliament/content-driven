@@ -59,7 +59,7 @@ class DB
   end
 
   def self.find_parent(parent_id)
-    self.pages.select{ |pg| pg[:id] == parent_id}
+    @@pages.select{ |pg| pg[:id] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
@@ -90,17 +90,17 @@ class DB
   end
 
   def self.generate_path(page)
-    path = self.x(page)
+    path = self.generate_parent_path(page)
 
     path == '' ? '/' : path
   end
 
-  def self.x(page)
+  def self.generate_parent_path(page)
     if page[:parent].nil?
       ''
     else
-      parent = self.pages.select{ |pg| pg[:id] == page[:parent] }
-      self.x(parent) + '/' + page[:slug]
+      parent = @@pages.select{ |pg| pg[:id] == page[:parent] }.first
+      self.generate_parent_path(parent) + '/' + page[:slug]
     end
   end
 
