@@ -7,10 +7,10 @@ class PageController < ApplicationController
 
     begin
       current_page = DB.find_page_by_path path
+      render 'templates/' + current_page[:template], locals: {current_page: current_page}
 
-      @data = {current_page: current_page}
-    rescue
-      # raise ActionController::RoutingError.new('Not Found')
+    rescue ActionController::RoutingError
+      raise ActionController::RoutingError.new('Not Found')
     end
   end
 end

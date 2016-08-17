@@ -4,34 +4,40 @@
 
 <page1>
 	a parl:Page ;     
-	parl:slug '' .
+	parl:slug '' ;
+	parl:template 'template1' .
 
 <page2>
 	a parl:Page ;     
 	parl:slug 'a' ;
-	parl:parent <page1> .
+	parl:parent <page1> ;
+	parl:template 'template2' .
 
 <page3> 
 	a parl:Page ;     
 	parl:slug 'b' ; 
-	parl:parent <page2> .
+	parl:parent <page2> ;
+	parl:template 'template1' .
 
 <page4> 
 	a parl:Page ;     
 	parl:slug 'c' ;
-	parl:parent <page2> .
-
+	parl:parent <page2> ;
+	parl:template 'template2' .
 <page5> 
 	a parl:Page ;     
 	parl:slug 'd' ; 
-	parl:parent <page3> .
+	parl:parent <page3> ;
+	parl:template 'template1' .
 
 <page6> 
 	a parl:Page ;     
 	parl:slug 'e' ;
-	parl:parent <page5> .
+	parl:parent <page5> ;
+	parl:template 'template2' .
 
 <page7> 
 	a parl:Page ;     
 	parl:slug 'f' ;
-	parl:parent <page6> .
+	parl:parent <page6> ;
+	parl:template 'template1' .

@@ -8,34 +8,17 @@ class DB
       graph = RDF::Graph.load("lib/DB.ttl", format:  :ttl)
 
       @@pages = graph.subjects.map do |subject|
-        slug_pattern = RDF::Query::Pattern.new(
-            subject,
-            RDF::URI.new("http://data.parliament.uk/schema/parl#slug"),
-            :slug
-        )
-        slug = graph.first_literal(slug_pattern).to_s
-        parent_pattern = RDF::Query::Pattern.new(
-            subject,
-            RDF::URI.new("http://data.parliament.uk/schema/parl#parent"),
-            :parent
-        )
-        parent = graph.first_object(parent_pattern)
+        slug = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
+        parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
+        template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
 
         {
             id: subject,
             slug: slug,
-            parent: parent
+            parent: parent,
+            template: template
         }
       end
-      #
-      # page1 = {slug: ''}
-      # page2 = {slug: 'a', parent: page1}
-      # page3 = {slug: 'b', parent: page2}
-      # page4 = {slug: 'c', parent: page2}
-      # page5 = {slug: 'd', parent: page3}
-      # page6 = {slug: 'e', parent: page5}
-      # page7 = {slug: 'f', parent: page6}
-      # @@pages = [page1, page2, page3, page4, page5, page6, page7]
 
       @@pages.each do |page|
         page[:path] = self.generate_path page
@@ -77,7 +60,7 @@ class DB
     end
 
     if pages.any? { |page| page.nil? }
-      raise 'Not Found'
+      raise ActionController::RoutingError.new('Path not found')
     end
 
     pages
@@ -119,5 +102,15 @@ class DB
       self.tree child
     end
     page
+  end
+
+  private
+
+  def self.get_object(graph, subject, predicate)
+    pattern = RDF::Query::Pattern.new(
+        subject,
+        RDF::URI.new(predicate),
+        :object)
+    graph.first_object(pattern)
   end
 end
