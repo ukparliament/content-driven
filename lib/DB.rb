@@ -30,7 +30,7 @@ class DB
     @@pages
   end
 
-  def self.find_page_by_slug(slug)
+  def self.find_root_page_by_slug(slug)
     self.pages.select { |page| page[:parent].nil? && page[:slug] == slug }.first
   end
 
@@ -53,7 +53,7 @@ class DB
 
     pages = path_components.map.with_index do |component, index|
       if index == 0
-        page = DB.find_page_by_slug component
+        page = DB.find_root_page_by_slug component
       else
         page = DB.find_page_by_slug_and_parent component, page
       end
