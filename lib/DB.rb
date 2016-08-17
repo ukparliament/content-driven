@@ -42,7 +42,7 @@ class DB
   end
 
   def self.find_parent(parent_id)
-    @@pages.select{ |pg| pg[:id] == parent_id }.first
+    self.pages.select{ |pg| pg[:id] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
