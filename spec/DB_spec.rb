@@ -4,22 +4,6 @@ require 'DB'
 describe DB do
 
   describe '#self.root' do
-    # pages = [
-    #     {
-    #         id: RDF::URI.new("http://id.ukpds.org/page1"),
-    #         slug: "",
-    #         template: "template1",
-    #         path: "/"
-    #     },
-    #     {
-    #         id: RDF::URI.new("http://id.ukpds.org/page2"),
-    #         parent: RDF::URI.new("http://id.ukpds.org/page1"),
-    #         slug: "a",
-    #         template: "template2",
-    #         path: "/a"
-    #     }
-    # ]
-
     it 'returns the root page - the one whose parent is nil' do
       expect(DB.root).to eq(DB.pages.first)
     end
@@ -34,6 +18,12 @@ describe DB do
   describe '#self.find_page_by_slug_and_parent' do
     it 'returns the second page when the slug is "a" and the parent is the root' do
       expect(DB.find_page_by_slug_and_parent('a', DB.pages.first)).to eq(DB.pages[1])
+    end
+  end
+
+  describe '#self.find_parent' do
+    it 'returns the root page when given the id of the root' do
+      expect(DB.find_parent(DB.pages.first[:id])).to eq(DB.pages.first)
     end
   end
 end
