@@ -1,0 +1,43 @@
+@base <http://id.ukpds.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix parl: <http://data.parliament.uk/schema/parl#> .
+
+<page1>
+	a parl:Page ;     
+	parl:slug '' ;
+	parl:template 'template1' .
+
+<page2>
+	a parl:Page ;     
+	parl:slug 'a' ;
+	parl:parent <page1> ;
+	parl:template 'template2' .
+
+<page3> 
+	a parl:Page ;     
+	parl:slug 'b' ; 
+	parl:parent <page2> ;
+	parl:template 'template1' .
+
+<page4> 
+	a parl:Page ;     
+	parl:slug 'c' ;
+	parl:parent <page2> ;
+	parl:template 'template2' .
+<page5> 
+	a parl:Page ;     
+	parl:slug 'd' ; 
+	parl:parent <page3> ;
+	parl:template 'template1' .
+
+<page6> 
+	a parl:Page ;     
+	parl:slug 'e' ;
+	parl:parent <page5> ;
+	parl:template 'template2' .
+
+<page7> 
+	a parl:Page ;     
+	parl:slug 'f' ;
+	parl:parent <page6> ;
+	parl:template 'template1' .

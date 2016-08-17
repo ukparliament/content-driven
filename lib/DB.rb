@@ -1,16 +1,24 @@
+require 'rdf/turtle'
+
 class DB
   @@pages = nil
 
   def self.pages
     if @@pages.nil?
-      page1 = {slug: '', template: 'template1'}
-      page2 = {slug: 'a', parent: page1, template: 'template1'}
-      page3 = {slug: 'b', parent: page2, template: 'template1'}
-      page4 = {slug: 'c', parent: page2, template: 'template2'}
-      page5 = {slug: 'd', parent: page3, template: 'template2'}
-      page6 = {slug: 'e', parent: page5, template: 'template2'}
-      page7 = {slug: 'f', parent: page6, template: 'template1'}
-      @@pages = [page1, page2, page3, page4, page5, page6, page7]
+      graph = RDF::Graph.load("lib/DB.ttl", format:  :ttl)
+
+      @@pages = graph.subjects.map do |subject|
+        slug = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
+        parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
+        template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+
+        {
+            id: subject,
+            slug: slug,
+            parent: parent,
+            template: template
+        }
+      end
 
       @@pages.each do |page|
         page[:path] = self.generate_path page
@@ -27,7 +35,14 @@ class DB
   end
 
   def self.find_page_by_slug_and_parent(slug, parent)
-    self.pages.select { |page| !page[:parent].nil? && page[:slug] == slug && page[:parent][:slug] == parent[:slug] }.first
+    self.pages.select do |page|
+      page_parent = self.find_parent(page[:parent])
+      !page[:parent].nil? && page[:slug] == slug && page_parent[:slug] == parent[:slug]
+    end.first
+  end
+
+  def self.find_parent(parent_id)
+    @@pages.select{ |pg| pg[:id] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
@@ -58,16 +73,17 @@ class DB
   end
 
   def self.generate_path(page)
-    path = self.x(page)
+    path = self.generate_parent_path(page)
 
     path == '' ? '/' : path
   end
 
-  def self.x(page)
+  def self.generate_parent_path(page)
     if page[:parent].nil?
       ''
     else
-      self.x(page[:parent]) + '/' + page[:slug]
+      parent = @@pages.select{ |pg| pg[:id] == page[:parent] }.first
+      self.generate_parent_path(parent) + '/' + page[:slug]
     end
   end
 
@@ -79,12 +95,22 @@ class DB
 
   def self.tree(page)
     page[:children] = self.pages.select do |pg|
-      pg[:parent] == page
+      pg[:parent] == page[:id]
     end
 
     page[:children].each do |child|
       self.tree child
     end
     page
+  end
+
+  private
+
+  def self.get_object(graph, subject, predicate)
+    pattern = RDF::Query::Pattern.new(
+        subject,
+        RDF::URI.new(predicate),
+        :object)
+    graph.first_object(pattern)
   end
 end
