@@ -11,12 +11,14 @@ class DB
         slug = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
         parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
         template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+        type = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
 
         {
             id: subject,
             slug: slug,
             parent: parent,
-            template: template
+            template: template,
+            type: type
         }
       end
 
@@ -30,7 +32,11 @@ class DB
     @@pages
   end
 
-  def self.find_page_by_slug(slug)
+  def self.reload
+    @@pages = nil
+  end
+
+  def self.find_root_page_by_slug(slug)
     self.pages.select { |page| page[:parent].nil? && page[:slug] == slug }.first
   end
 
@@ -42,7 +48,7 @@ class DB
   end
 
   def self.find_parent(parent_id)
-    @@pages.select{ |pg| pg[:id] == parent_id }.first
+    self.pages.select{ |pg| pg[:id] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
@@ -53,7 +59,7 @@ class DB
 
     pages = path_components.map.with_index do |component, index|
       if index == 0
-        page = DB.find_page_by_slug component
+        page = DB.find_root_page_by_slug component
       else
         page = DB.find_page_by_slug_and_parent component, page
       end

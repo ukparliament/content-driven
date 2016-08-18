@@ -2,7 +2,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix parl: <http://data.parliament.uk/schema/parl#> .
 
-<page1>
+<root>
 	a parl:Page ;     
 	parl:slug '' ;
 	parl:template 'template1' .
@@ -10,12 +10,12 @@
 <page2>
 	a parl:Page ;     
 	parl:slug 'a' ;
-	parl:parent <page1> ;
+	parl:parent <root> ;
 	parl:template 'template2' .
 
 <page3> 
 	a parl:Page ;     
-	parl:slug 'b' ; 
+	parl:slug 'b' ;
 	parl:parent <page2> ;
 	parl:template 'template1' .
 
@@ -26,7 +26,7 @@
 	parl:template 'template2' .
 <page5> 
 	a parl:Page ;     
-	parl:slug 'd' ; 
+	parl:slug 'd' ;
 	parl:parent <page3> ;
 	parl:template 'template1' .
 
@@ -41,3 +41,10 @@
 	parl:slug 'f' ;
 	parl:parent <page6> ;
 	parl:template 'template1' .
+	
+<reload>
+    a parl:Page ;
+    parl:slug 'reload' ;
+    parl:parent <root> ;
+    parl:template 'reload' ;
+    parl:type 'A::Reload' .
