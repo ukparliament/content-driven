@@ -40,9 +40,6 @@ class PageController < ApplicationController
   private
 
   def normalize_path
-    # TODO: remove slug altogether for root page
-
-
     #empty string needed for the root path
     params[:path] || ''
   end

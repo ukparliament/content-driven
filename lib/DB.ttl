@@ -4,47 +4,62 @@
 
 <root>
 	a parl:Page ;     
-	parl:slug '' ;
-	parl:template 'template1' .
+	parl:template 'template1' ;
+	parl:title 'root' .
+
+<page1>
+	a parl:Page ;
+	parl:slug '1a' ;
+	parl:parent <root> ;
+	parl:template 'template1' ;
+	parl:title 'page1' .
 
 <page2>
 	a parl:Page ;     
 	parl:slug 'a' ;
 	parl:parent <root> ;
-	parl:template 'template2' .
+	parl:template 'template2' ;
+	parl:title 'page2' .
 
 <page3> 
 	a parl:Page ;     
 	parl:slug 'b' ;
 	parl:parent <page2> ;
-	parl:template 'template1' .
+	parl:template 'template1' ;
+	parl:title 'page3' .
 
 <page4> 
 	a parl:Page ;     
 	parl:slug 'c' ;
 	parl:parent <page2> ;
-	parl:template 'template2' .
+	parl:template 'template2' ;
+	parl:title 'page4' .
+
 <page5> 
 	a parl:Page ;     
 	parl:slug 'd' ;
 	parl:parent <page3> ;
-	parl:template 'template1' .
+	parl:template 'template1' ;
+	parl:title 'page5' .
 
 <page6> 
 	a parl:Page ;     
 	parl:slug 'e' ;
 	parl:parent <page5> ;
-	parl:template 'template2' .
+	parl:template 'template2' ;
+	parl:title 'page6' .
 
 <page7> 
 	a parl:Page ;     
 	parl:slug 'f' ;
 	parl:parent <page6> ;
-	parl:template 'template1' .
+	parl:template 'template1' ;
+	parl:title 'page7' .
 	
 <reload>
     a parl:Page ;
     parl:slug 'reload' ;
     parl:parent <root> ;
     parl:template 'reload' ;
-    parl:type 'A::Reload' .
+    parl:type 'A::Reload' ;
+    parl:title 'reload' .

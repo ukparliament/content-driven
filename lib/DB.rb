@@ -12,13 +12,15 @@ class DB
         parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
         template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
         type = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
+        title = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
 
         {
             id: subject,
             slug: slug,
             parent: parent,
             template: template,
-            type: type
+            type: type,
+            title: title
         }
       end
 
