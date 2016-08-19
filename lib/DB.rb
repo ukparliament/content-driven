@@ -68,15 +68,18 @@ class DB
     end
 
     if pages.any? { |page| page.nil? }
-      raise ActionController::RoutingError.new('Path not found')
+      nil
+    else
+      pages
     end
-
-    pages
   end
 
   def self.find_page_by_path path
     pages = self.find_ancestry_by_path path
 
+    if pages.nil?
+      raise ActionController::RoutingError.new('not found')
+    end
     pages.last
   end
 
