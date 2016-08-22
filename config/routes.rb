@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   get 'sitemap.xml', to: 'sitemap#show'
 
-  get 'pages/add', to: 'page#create'
+  get 'pages/new', to: 'page#new'
+
+  post 'pages', to: 'page#create'
 
   match '*path', to: 'page#show', via: [:get, :post]
 

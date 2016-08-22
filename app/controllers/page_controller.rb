@@ -28,13 +28,16 @@ module A
 end
 
 class PageController < ApplicationController
-  def create
-
+  def new
+    @page = { }
   end
-  
+
+  def create
+    redirect_to root_path
+  end
+
   def show
     path = normalize_path
-
     begin
       find_and_render(path)
 
