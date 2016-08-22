@@ -19,6 +19,12 @@ module A
       DB.reload
     end
   end
+
+  class NotFound < PageBase
+    def render
+      @controller.render 'templates/' + @page[:template], locals: {current_page: @page}, status: 404
+    end
+  end
 end
 
 class PageController < ApplicationController
@@ -26,23 +32,25 @@ class PageController < ApplicationController
     path = normalize_path
 
     begin
-      db_page = DB.find_page_by_path(path)
-
-      app_page = get_page(db_page)
-
-      app_page.render
+      find_and_render(path)
 
     rescue ActionController::RoutingError
-      raise ActionController::RoutingError.new('Not Found')
+      find_and_render('404')
+      # raise ActionController::RoutingError.new('Not Found')
     end
+  end
+
+  def find_and_render(path)
+    db_page = DB.find_page_by_path(path)
+
+    app_page = get_page(db_page)
+
+    app_page.render
   end
 
   private
 
   def normalize_path
-    # TODO: remove slug altogether for root page
-
-
     #empty string needed for the root path
     params[:path] || ''
   end

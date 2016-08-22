@@ -8,17 +8,19 @@ class DB
       graph = RDF::Graph.load("lib/DB.ttl", format:  :ttl)
 
       @@pages = graph.subjects.map do |subject|
-        slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
-        parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
-        template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
-        type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
+        slug = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
+        parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
+        template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+        type = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
+        title = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
 
         {
             id: subject,
             slug: slug,
             parent: parent,
             template: template,
-            type: type
+            type: type,
+            title: title
         }
       end
 
@@ -66,15 +68,18 @@ class DB
     end
 
     if pages.any? { |page| page.nil? }
-      raise ActionController::RoutingError.new('Path not found')
+      nil
+    else
+      pages
     end
-
-    pages
   end
 
   def self.find_page_by_path path
     pages = self.find_ancestry_by_path path
 
+    if pages.nil?
+      raise ActionController::RoutingError.new('not found')
+    end
     pages.last
   end
 

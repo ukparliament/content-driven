@@ -2,6 +2,11 @@
 <html>
 <head>
   <%= csrf_meta_tags %>
+  <% if content_for?(:head) %>
+      <%= content_for(:head) %>
+  <% else %>
+      <title>Default title</title>
+  <% end %>
 </head>
 <body>
 <%= breadcrumbs_json_ld params[:path] %>
