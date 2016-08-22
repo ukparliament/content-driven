@@ -28,6 +28,10 @@ module A
 end
 
 class PageController < ApplicationController
+  def create
+
+  end
+  
   def show
     path = normalize_path
 
