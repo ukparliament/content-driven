@@ -8,11 +8,11 @@ class DB
       graph = RDF::Graph.load("lib/DB.ttl", format:  :ttl)
 
       @@pages = graph.subjects.map do |subject|
-        slug = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
-        parent = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
-        template = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
-        type = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
-        title = self.get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
+        slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
+        parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
+        template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+        type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
+        title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
 
         {
             id: subject,
