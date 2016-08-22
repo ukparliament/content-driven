@@ -27,13 +27,16 @@ module A
   end
 end
 
-class PageController < ApplicationController
+class PagesController < ApplicationController
   def new
     @page = { }
+    @templates = ["template1", "template2"]
+    @parents = [{title: 'a', uri: 'http://test.com/1'}, {title: 'b', uri: 'http://test/com/2'}]
+    @parents_dropdown_data = @parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
   end
 
   def create
-    redirect_to root_path
+    raise params
   end
 
   def show
