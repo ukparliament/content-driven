@@ -115,8 +115,6 @@ class DB
     page
   end
 
-  private
-
   def self.get_object(graph, subject, predicate)
     pattern = RDF::Query::Pattern.new(
         subject,
@@ -124,4 +122,6 @@ class DB
         :object)
     graph.first_object(pattern)
   end
+
+  private_class_method :get_object
 end
