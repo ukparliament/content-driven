@@ -14,6 +14,10 @@
 <ul>
   <%= navigation_menu %>
 </ul>
+<% unless current_page? pages_new_path%>
+  <%= link_to "Add page", pages_new_path %>
+<% end %>
+
 <style>
   ul.breadcrumbs li {
     list-style-type: none;
