@@ -68,6 +68,6 @@
     a parl:Page ;
     parl:slug '404' ;
     parl:parent <root> ;
-    parl:template 'template1' ;
+    parl:template 'template_error' ;
     parl:type 'A::NotFound' ;
     parl:title 'not found' .
