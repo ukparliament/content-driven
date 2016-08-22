@@ -146,6 +146,49 @@ class DB
     page
   end
 
+  def self.find_templates
+    graph = self.query('
+              PREFIX parl: <http://data.parliament.uk/schema/parl#>
+              CONSTRUCT {
+                   _:x parl:template ?template
+              }
+              WHERE {
+                  SELECT DISTINCT ?template WHERE {
+                  ?s parl:template ?template .
+                }
+              }
+            ')
+    graph.subjects.map do |subject|
+      get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+    end
+  end
+
+  def self.potential_parents
+    graph = self.query('
+              PREFIX parl: <http://data.parliament.uk/schema/parl#>
+              CONSTRUCT {
+                   _:x
+                      parl:page ?s ;
+                      parl:title ?title .
+              }
+              WHERE {
+                  SELECT ?s ?title WHERE {
+                      ?s
+                          a parl:Page ;
+                          parl:title ?title .
+                }
+              }
+            ')
+    graph.subjects.map do |subject|
+      uri = get_object(graph, subject, "http://data.parliament.uk/schema/parl#page")
+      title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#page")
+      {
+          uri: uri,
+          title: title
+      }
+    end
+  end
+
   def self.query(sparql)
     RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
   end
