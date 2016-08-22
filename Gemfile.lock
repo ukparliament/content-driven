@@ -67,6 +67,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.0)
+    net-http-persistent (2.9.4)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
@@ -101,8 +102,12 @@ GEM
     rake (11.2.2)
     rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
+    rdf-aggregate-repo (1.99.0)
+      rdf (~> 1.99)
     rdf-turtle (1.99.0)
       ebnf (~> 1.0)
+      rdf (~> 1.99)
+    rdf-xsd (1.99.0)
       rdf (~> 1.99)
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
@@ -121,6 +126,17 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    sparql (1.99.1)
+      builder (~> 3.2)
+      ebnf (~> 1.0)
+      rdf (~> 1.99)
+      rdf-aggregate-repo (~> 1.99)
+      rdf-xsd (~> 1.1)
+      sparql-client (~> 1.1)
+      sxp (~> 0.1)
+    sparql-client (1.99.0)
+      net-http-persistent (~> 2.9)
+      rdf (~> 1.1)
     spring (1.7.2)
     sprockets (3.7.0)
       concurrent-ruby (~> 1.0)
@@ -147,6 +163,7 @@ DEPENDENCIES
   rdf
   rdf-turtle
   rspec-rails
+  sparql
   spring
 
 BUNDLED WITH
