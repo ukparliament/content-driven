@@ -1,0 +1,9 @@
+<style>
+  p {
+    color: red;
+  }
+</style>
+
+<% render partial: 'shared/title', locals: { title: current_page[:title] }%>
+
+<p>I am a different template (not_found) and I am for "<%= current_page[:slug] %>"</p>

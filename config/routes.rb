@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
-  root 'page#show', via: [:get, :post]
+  root 'pages#show', via: [:get, :post]
 
   get 'sitemap.xml', to: 'sitemap#show'
 
-  match '*path', to: 'page#show', via: [:get, :post]
+  resources :pages, only: [:new, :create, :edit, :update]
+
+  match '*path', to: 'pages#show', via: [:get, :post]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
