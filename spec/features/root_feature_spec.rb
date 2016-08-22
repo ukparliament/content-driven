@@ -7,7 +7,7 @@ feature 'home'  do
     end
 
     scenario 'should display text home' do
-      expect(page).to have_text 'home'
+      expect(page).to have_css('.breadcrumbs li a', text: 'home')
     end
 
     # scenario 'visit page e' do
