@@ -30,13 +30,24 @@ end
 class PagesController < ApplicationController
   def new
     @page = { }
-    @templates = ["template1", "template2"]
-    @parents = [{title: 'a', uri: 'http://test.com/1'}, {title: 'b', uri: 'http://test/com/2'}]
+    @templates = DB.find_templates
+    @parents = DB.potential_parents
     @parents_dropdown_data = @parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
   end
 
   def create
-    raise params
+    subject = RDF::URI.new("http://id.ukpds.org/#{params[:new_slug]}")
+    statemtents_to_add = [
+        create_statement(subject, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", RDF::URI.new("http://data.parliament.uk/schema/parl#Page")),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#slug", params[:new_slug]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#title", params[:new_title]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#parent", RDF::URI.new(params[:parent])),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#template", params[:template]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#text", params[:new_text])
+    ]
+    update_graph(statemtents_to_add, true)
+    DB.reload
+    redirect_to root_path
   end
 
   def show

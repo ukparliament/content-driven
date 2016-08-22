@@ -181,7 +181,7 @@ class DB
             ')
     graph.subjects.map do |subject|
       uri = get_object(graph, subject, "http://data.parliament.uk/schema/parl#page")
-      title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#page")
+      title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
       {
           uri: uri,
           title: title
