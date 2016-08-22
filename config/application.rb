@@ -3,12 +3,15 @@ require File.expand_path('../boot', __FILE__)
 require "rails"
 require "action_controller/railtie"
 require "action_view/railtie"
+require 'action_mailer/railtie'
+
+DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module RailsAppTest1
+module ContentDriven
   class Application < Rails::Application
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -22,5 +25,7 @@ module RailsAppTest1
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    config.database = DATABASE
   end
 end

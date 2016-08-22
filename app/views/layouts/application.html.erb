@@ -2,10 +2,42 @@
 <html>
 <head>
   <%= csrf_meta_tags %>
+  <% if content_for?(:head) %>
+      <%= content_for(:head) %>
+  <% else %>
+      <title>Default title</title>
+  <% end %>
 </head>
 <body>
+<%= breadcrumbs_json_ld params[:path] %>
+<%= breadcrumbs params[:path] %>
+<ul>
+  <%= navigation_menu %>
+</ul>
+<% unless current_page? new_page_path%>
+  <%= link_to "Add pages", new_page_path %>
+<% end %>
 
+<style>
+  ul.breadcrumbs li {
+    list-style-type: none;
+    display: inline;
+  }
+
+  ul.breadcrumbs li::before {
+    content: '/'
+  }
+
+  ul.breadcrumbs li:first-child::before {
+    content: ''
+  }
+
+  ul.breadcrumbs li:last-child a {
+    text-decoration: none;
+    color: inherit;
+    cursor: text;
+  }
+</style>
 <%= yield %>
-
 </body>
 </html>
