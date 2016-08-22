@@ -13,7 +13,8 @@ class DB
                           parl:parent ?parent ;
                           parl:template ?template ;
                           parl:type ?type ;
-                          parl:title ?title .
+                          parl:title ?title ;
+                          parl:text ?text .
                   }
                   WHERE {
                     ?s a parl:Page ;
@@ -44,6 +45,7 @@ class DB
         template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
         type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
         title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
+        text = get_object(graph, subject, "http://data.parliament.uk/schema/parl#text").to_s
 
         {
             id: subject,
@@ -51,7 +53,8 @@ class DB
             parent: parent,
             template: template,
             type: type,
-            title: title
+            title: title,
+            text: text
         }
       end
 
