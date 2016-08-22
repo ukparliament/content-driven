@@ -6,6 +6,7 @@ gem 'rails', '4.2.6'
 
 gem 'rdf'
 gem 'rdf-turtle'
+gem 'sparql'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -5,7 +5,38 @@ class DB
 
   def self.pages
     if @@pages.nil?
-      graph = RDF::Graph.load("lib/DB.ttl", format:  :ttl)
+      graph = self.query(
+                  'PREFIX parl: <http://data.parliament.uk/schema/parl#>
+                  CONSTRUCT {
+                      ?s
+                          parl:slug ?slug ;
+                          parl:parent ?parent ;
+                          parl:template ?template ;
+                          parl:type ?type ;
+                          parl:title ?title .
+                  }
+                  WHERE {
+                    ?s a parl:Page ;
+                          parl:template ?template ;
+                          parl:title ?title .
+                      OPTIONAL
+                      {
+                          ?s parl:slug ?slug .
+                      }
+                      OPTIONAL
+                      {
+                         ?s parl:parent ?parent .
+                      }
+                      OPTIONAL
+                      {
+                          ?s parl:type ?type .
+                      }
+                      OPTIONAL
+                      {
+                          ?s parl:text ?text .
+                      }
+                  }
+                ')
 
       @@pages = graph.subjects.map do |subject|
         slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
@@ -113,6 +144,10 @@ class DB
       self.tree child
     end
     page
+  end
+
+  def self.query(sparql)
+    RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
   end
 
   def self.get_object(graph, subject, predicate)
