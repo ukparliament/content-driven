@@ -19,4 +19,16 @@ class ApplicationController < ActionController::Base
     o = object
     RDF::Statement(s, p, o)
   end
+
+  def generate_statements(page)
+    subject = page[:uri]
+    [
+        create_statement(subject, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", RDF::URI.new("http://data.parliament.uk/schema/parl#Page")),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#slug", page[:slug]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#title", page[:title]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#parent", RDF::URI.new(page[:parent])),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#template", page[:template]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#text", page[:text])
+    ]
+  end
 end

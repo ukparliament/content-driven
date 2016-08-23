@@ -192,6 +192,60 @@ class DB
     end
   end
 
+  def self.find_page_from_database(uri)
+    graph = self.query("
+      PREFIX parl: <http://data.parliament.uk/schema/parl#>
+      CONSTRUCT {
+      ?page
+        parl:slug ?slug ;
+        parl:parent ?parent ;
+        parl:template ?template ;
+        parl:type ?type ;
+        parl:title ?title ;
+        parl:text ?text .
+      }
+      WHERE {
+        ?page
+          a parl:Page ;
+          parl:template ?template ;
+          parl:title ?title .
+          OPTIONAL
+          {
+            ?page parl:slug ?slug .
+           }
+           OPTIONAL
+           {
+            ?page parl:parent ?parent .
+           }
+           OPTIONAL
+          {
+           ?page parl:type ?type .
+          }
+          OPTIONAL
+          {
+          ?page parl:text ?text .
+          }
+        FILTER(?page = <#{uri}>)
+      }
+    ")
+    slug = get_object(graph, uri, "http://data.parliament.uk/schema/parl#slug").to_s
+    parent = get_object(graph, uri, "http://data.parliament.uk/schema/parl#parent")
+    template = get_object(graph, uri, "http://data.parliament.uk/schema/parl#template").to_s
+    type = get_object(graph, uri, "http://data.parliament.uk/schema/parl#type").to_s
+    title = get_object(graph, uri, "http://data.parliament.uk/schema/parl#title").to_s
+    text = get_object(graph, uri, "http://data.parliament.uk/schema/parl#text").to_s
+
+      {
+          uri: uri,
+          slug: slug,
+          parent: parent,
+          template: template,
+          type: type,
+          title: title,
+          text: text
+      }
+  end
+
   def self.query(sparql)
     RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
   end
