@@ -3,8 +3,6 @@ Rails.application.routes.draw do
 
   get 'sitemap.xml', to: 'sitemap#show'
 
-  resources :pages, only: [:new, :create, :edit, :update]
-
   match '*path', to: 'pages#show', via: [:get, :post]
 
   # The priority is based upon order of creation: first created -> highest priority.

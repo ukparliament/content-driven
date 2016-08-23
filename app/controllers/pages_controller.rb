@@ -25,23 +25,29 @@ module A
       @controller.render 'templates/' + @page[:template], locals: {current_page: @page}, status: 404
     end
   end
+
+  class AddPage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+      @new_page = { }
+      @templates = DB.find_templates
+      parents = DB.potential_parents
+      @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      if @controller.request.post?
+        page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(page)
+        @controller.update_graph(statements_to_add, true)
+        DB.reload
+      end
+    end
+
+    def render
+      @controller.render 'templates/' + @page[:template], locals: { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+    end
+  end
 end
 
 class PagesController < ApplicationController
-  def new
-    @page = { }
-    @templates = DB.find_templates
-    @parents = DB.potential_parents
-    @parents_dropdown_data = @parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
-  end
-
-  def create
-    page = generate_new_page(params)
-    statements_to_add = generate_statements(page)
-    update_graph(statements_to_add, true)
-    DB.reload
-    redirect_to root_path
-  end
 
   def show
     path = normalize_path
@@ -50,7 +56,6 @@ class PagesController < ApplicationController
 
     rescue ActionController::RoutingError
       find_and_render('404')
-      # raise ActionController::RoutingError.new('Not Found')
     end
   end
 
@@ -77,14 +82,4 @@ class PagesController < ApplicationController
     page_class.new(page, self)
   end
 
-  def generate_new_page(params)
-    {
-        uri: RDF::URI.new("http://id.ukpds.org/#{params[:slug]}"),
-        title: params[:title],
-        slug: params[:slug],
-        template: params[:template],
-        parent: params[:parent],
-        text: params[:text]
-    }
-  end
 end
