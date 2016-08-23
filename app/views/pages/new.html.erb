@@ -3,11 +3,11 @@
 <%= form_tag(action: 'create') do %>
     <label>
       Slug:
-      <%= text_field_tag('new_slug', @page[:slug]) %>
+      <%= text_field_tag('slug', @page[:slug]) %>
     </label>
     <label>
       Title:
-      <%= text_field_tag 'new_title', @page[:title] %>
+      <%= text_field_tag 'title', @page[:title] %>
     </label>
     <%= label_tag(:parent, 'Parent') %>
     <%= select_tag(:parent, options_for_select(@parents_dropdown_data)) %>
@@ -15,7 +15,7 @@
     <%= select_tag(:template, options_for_select(@templates)) %>
     <label>
       Text:
-      <%= text_field_tag 'new_text', @page[:text] %>
+      <%= text_field_tag 'text', @page[:text] %>
     </label>
 
     <%= submit_tag("Add Page") %>
