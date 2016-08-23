@@ -25,6 +25,13 @@ module A
       @controller.render 'templates/' + @page[:template], locals: {current_page: @page}, status: 404
     end
   end
+
+  class AddPage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+
+    end
+  end
 end
 
 class PagesController < ApplicationController
