@@ -1,9 +1,11 @@
 <li>
-  <a href="<%= node[:path] %>"><%= node[:slug] == '' ? 'home' : node[:slug] %></a>
+  <%= link_to node[:path] do %>
+      <%= node[:slug] == '' ? 'home' : node[:slug] %>
+  <% end %>
   <% unless node[:children].empty? %>
       <ul>
         <% node[:children].each do |child| %>
-            <%= render partial: 'shared/navigation_menu', locals: {node: child} %>
+            <%= render partial: 'shared/navigation_menu', locals: { node: child } %>
         <% end %>
       </ul>
   <% end %>

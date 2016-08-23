@@ -4,3 +4,7 @@
 
 <p><%= current_page[:text] %></p>
 
+<%= link_to root_path + "edit_page?current_path=#{current_page[:slug]}" do %>
+    Edit
+<% end %>
+

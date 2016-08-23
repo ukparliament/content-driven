@@ -42,7 +42,40 @@ module A
     end
 
     def render
-      @controller.render 'templates/' + @page[:template], locals: { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      @controller.render 'templates/' + @page[:template], locals: { page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+    end
+  end
+
+  class EditPage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+      if @controller.request.get?
+        current_path = @controller.params[:current_path]
+        @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+        @templates = DB.find_templates
+        parents = DB.potential_parents
+        @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      end
+
+      if @controller.request.post?
+        @current_page = DB.find_page_from_database("http://id.ukpds.org/#{@controller.params[:slug]}")
+        statements_to_delete = @controller.generate_statements(@current_page)
+        @controller.update_graph(statements_to_delete, false)
+
+        new_page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(new_page)
+        @controller.update_graph(statements_to_add, true)
+
+        DB.reload
+      end
+    end
+
+    def render
+      if @controller.request.post?
+        @controller.redirect_to @controller.root_path
+      else
+        @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      end
     end
   end
 end
