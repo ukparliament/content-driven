@@ -1,6 +1,7 @@
 <h1>Add New Page</h1>
 
 <%= form_tag do %>
+    <%= hidden_field_tag('uri', page[:uri]) %>
     <label>
       Slug:
       <%= text_field_tag('slug', page[:slug]) %>

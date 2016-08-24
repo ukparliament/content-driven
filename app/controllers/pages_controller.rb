@@ -58,7 +58,7 @@ module A
       end
 
       if @controller.request.post?
-        @current_page = DB.find_page_from_database("http://id.ukpds.org/#{@controller.params[:slug]}")
+        @current_page = DB.find_page_from_database(@controller.params[:uri])
         statements_to_delete = @controller.generate_statements(@current_page)
         @controller.update_graph(statements_to_delete, false)
 
