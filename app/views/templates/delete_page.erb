@@ -1,0 +1,5 @@
+<p>Delete <%= "#{page[:title]}?" %></p>
+<%= form_tag do %>
+    <%= hidden_field_tag('uri', page[:uri]) %>
+  <%= submit_tag('Delete') %>
+<% end %>
