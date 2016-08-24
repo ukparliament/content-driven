@@ -48,7 +48,7 @@ class DB
         text = get_object(graph, subject, "http://data.parliament.uk/schema/parl#text").to_s
 
         {
-            id: subject,
+            uri: subject,
             slug: slug,
             parent: parent,
             template: template,
@@ -84,7 +84,7 @@ class DB
   end
 
   def self.find_parent(parent_id)
-    self.pages.select{ |pg| pg[:id] == parent_id }.first
+    self.pages.select{ |pg| pg[:uri] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
@@ -127,7 +127,7 @@ class DB
     if page[:parent].nil?
       ''
     else
-      parent = @@pages.select{ |pg| pg[:id] == page[:parent] }.first
+      parent = @@pages.select{ |pg| pg[:uri] == page[:parent] }.first
       self.generate_parent_path(parent) + '/' + page[:slug]
     end
   end
@@ -140,7 +140,7 @@ class DB
 
   def self.tree(page)
     page[:children] = self.pages.select do |pg|
-      pg[:parent] == page[:id]
+      pg[:parent] == page[:uri]
     end
 
     page[:children].each do |child|
