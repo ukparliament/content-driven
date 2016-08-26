@@ -40,22 +40,7 @@ class DB
                 ')
 
       @@pages = graph.subjects.map do |subject|
-        slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
-        parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
-        template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
-        type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
-        title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
-        text = get_object(graph, subject, "http://data.parliament.uk/schema/parl#text").to_s
-
-        {
-            uri: subject,
-            slug: slug,
-            parent: parent,
-            template: template,
-            type: type,
-            title: title,
-            text: text
-        }
+        page_mapper(graph, subject)
       end
 
       @@pages.each do |page|
@@ -229,6 +214,14 @@ class DB
       }
     ")
     subject = RDF::URI.new(uri)
+    page_mapper(graph, subject)
+  end
+
+  def self.query(sparql)
+    RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
+  end
+
+  def self.page_mapper(graph, subject)
     slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
     parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
     template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
@@ -236,19 +229,15 @@ class DB
     title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
     text = get_object(graph, subject, "http://data.parliament.uk/schema/parl#text").to_s
 
-      {
-          uri: subject,
-          slug: slug,
-          parent: parent,
-          template: template,
-          type: type,
-          title: title,
-          text: text
-      }
-  end
-
-  def self.query(sparql)
-    RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
+    {
+        uri: subject,
+        slug: slug,
+        parent: parent,
+        template: template,
+        type: type,
+        title: title,
+        text: text
+    }
   end
 
   def self.get_object(graph, subject, predicate)
@@ -259,5 +248,5 @@ class DB
     graph.first_object(pattern)
   end
 
-  private_class_method :get_object
+  private_class_method :get_object, :page_mapper
 end
