@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  protected
+  # protected
 
   def update_graph(statements, is_insert)
     repo = SPARQL::Client::Repository.new("#{ContentDriven::Application.config.database}/statements")
@@ -18,5 +18,28 @@ class ApplicationController < ActionController::Base
     p = RDF::URI.new(predicate)
     o = object
     RDF::Statement(s, p, o)
+  end
+
+  def generate_statements(page)
+    subject = page[:uri]
+    [
+        create_statement(subject, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", RDF::URI.new("http://data.parliament.uk/schema/parl#Page")),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#slug", page[:slug]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#title", page[:title]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#parent", RDF::URI.new(page[:parent])),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#template", page[:template]),
+        create_statement(subject, "http://data.parliament.uk/schema/parl#text", page[:text])
+    ]
+  end
+
+  def generate_new_page(params)
+    {
+        uri: RDF::URI.new("http://id.ukpds.org/#{params[:slug]}"),
+        title: params[:title],
+        slug: params[:slug],
+        template: params[:template],
+        parent: params[:parent],
+        text: params[:text]
+    }
   end
 end

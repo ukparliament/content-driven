@@ -13,7 +13,8 @@ class DB
                           parl:parent ?parent ;
                           parl:template ?template ;
                           parl:type ?type ;
-                          parl:title ?title .
+                          parl:title ?title ;
+                          parl:text ?text .
                   }
                   WHERE {
                     ?s a parl:Page ;
@@ -39,20 +40,7 @@ class DB
                 ')
 
       @@pages = graph.subjects.map do |subject|
-        slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
-        parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
-        template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
-        type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
-        title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
-
-        {
-            id: subject,
-            slug: slug,
-            parent: parent,
-            template: template,
-            type: type,
-            title: title
-        }
+        page_mapper(graph, subject)
       end
 
       @@pages.each do |page|
@@ -81,7 +69,7 @@ class DB
   end
 
   def self.find_parent(parent_id)
-    self.pages.select{ |pg| pg[:id] == parent_id }.first
+    self.pages.select{ |pg| pg[:uri] == parent_id }.first
   end
 
   def self.find_ancestry_by_path path
@@ -124,7 +112,7 @@ class DB
     if page[:parent].nil?
       ''
     else
-      parent = @@pages.select{ |pg| pg[:id] == page[:parent] }.first
+      parent = @@pages.select{ |pg| pg[:uri] == page[:parent] }.first
       self.generate_parent_path(parent) + '/' + page[:slug]
     end
   end
@@ -137,7 +125,7 @@ class DB
 
   def self.tree(page)
     page[:children] = self.pages.select do |pg|
-      pg[:parent] == page[:id]
+      pg[:parent] == page[:uri]
     end
 
     page[:children].each do |child|
@@ -189,8 +177,67 @@ class DB
     end
   end
 
+  def self.find_page_from_database(uri)
+    graph = self.query("
+      PREFIX parl: <http://data.parliament.uk/schema/parl#>
+      CONSTRUCT {
+      ?page
+        parl:slug ?slug ;
+        parl:parent ?parent ;
+        parl:template ?template ;
+        parl:type ?type ;
+        parl:title ?title ;
+        parl:text ?text .
+      }
+      WHERE {
+        ?page
+          a parl:Page ;
+          parl:template ?template ;
+          parl:title ?title .
+          OPTIONAL
+          {
+            ?page parl:slug ?slug .
+           }
+           OPTIONAL
+           {
+            ?page parl:parent ?parent .
+           }
+           OPTIONAL
+          {
+           ?page parl:type ?type .
+          }
+          OPTIONAL
+          {
+          ?page parl:text ?text .
+          }
+        FILTER(?page = <#{uri}>)
+      }
+    ")
+    subject = RDF::URI.new(uri)
+    page_mapper(graph, subject)
+  end
+
   def self.query(sparql)
     RDF::Graph.new << SPARQL::Client.new(ContentDriven::Application.config.database).query(sparql)
+  end
+
+  def self.page_mapper(graph, subject)
+    slug = get_object(graph, subject, "http://data.parliament.uk/schema/parl#slug").to_s
+    parent = get_object(graph, subject, "http://data.parliament.uk/schema/parl#parent")
+    template = get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
+    type = get_object(graph, subject, "http://data.parliament.uk/schema/parl#type").to_s
+    title = get_object(graph, subject, "http://data.parliament.uk/schema/parl#title").to_s
+    text = get_object(graph, subject, "http://data.parliament.uk/schema/parl#text").to_s
+
+    {
+        uri: subject,
+        slug: slug,
+        parent: parent,
+        template: template,
+        type: type,
+        title: title,
+        text: text
+    }
   end
 
   def self.get_object(graph, subject, predicate)
@@ -201,5 +248,5 @@ class DB
     graph.first_object(pattern)
   end
 
-  private_class_method :get_object
+  private_class_method :get_object, :page_mapper
 end

@@ -25,30 +25,103 @@ module A
       @controller.render 'templates/' + @page[:template], locals: {current_page: @page}, status: 404
     end
   end
+
+  class AddPage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+      @new_page = { }
+      @templates = DB.find_templates
+      # parents = DB.potential_parents
+      # @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      if @controller.request.post?
+        page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(page)
+        @controller.update_graph(statements_to_add, true)
+        DB.reload
+      end
+    end
+
+    def render
+      parents = DB.potential_parents
+      @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      @controller.render 'templates/' + @page[:template], locals: { page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+    end
+  end
+
+  class EditPage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+      if @controller.request.get?
+        current_path = @controller.params[:current_path]
+        @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+        @templates = DB.find_templates
+        parents = DB.potential_parents
+        @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      end
+
+      if @controller.request.post?
+        current_page = DB.find_page_from_database(@controller.params[:uri])
+        statements_to_delete = @controller.generate_statements(current_page)
+        @controller.update_graph(statements_to_delete, false)
+
+        new_page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(new_page)
+        @controller.update_graph(statements_to_add, true)
+        DB.reload
+      end
+    end
+
+    def render
+      if @controller.request.post?
+        @controller.redirect_to @controller.root_path
+      else
+        @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      end
+    end
+  end
+end
+
+class DeletePage < PageBase
+  def initialize(page, controller)
+    super(page, controller)
+    if @controller.request.get?
+      current_path = @controller.params[:current_path]
+      @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+    end
+
+    if @controller.request.post?
+      current_page = DB.find_page_from_database(@controller.params[:uri])
+      DB.tree(current_page)
+
+      delete_page_and_children(current_page)
+
+      DB.reload
+    end
+  end
+
+  def delete_page_and_children(page)
+    if page[:children].empty?
+      statements_to_delete = @controller.generate_statements(page)
+      @controller.update_graph(statements_to_delete, false)
+    else
+      page[:children].each do |child_page|
+        delete_page_and_children(child_page)
+      end
+    end
+    statements_to_delete = @controller.generate_statements(page)
+    @controller.update_graph(statements_to_delete, false)
+  end
+
+  def render
+    if @controller.request.post?
+      @controller.redirect_to @controller.root_path
+    else
+      @controller.render 'templates/' + @page[:template], locals: { page: @current_page }
+    end
+  end
 end
 
 class PagesController < ApplicationController
-  def new
-    @page = { }
-    @templates = DB.find_templates
-    @parents = DB.potential_parents
-    @parents_dropdown_data = @parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
-  end
-
-  def create
-    subject = RDF::URI.new("http://id.ukpds.org/#{params[:new_slug]}")
-    statemtents_to_add = [
-        create_statement(subject, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", RDF::URI.new("http://data.parliament.uk/schema/parl#Page")),
-        create_statement(subject, "http://data.parliament.uk/schema/parl#slug", params[:new_slug]),
-        create_statement(subject, "http://data.parliament.uk/schema/parl#title", params[:new_title]),
-        create_statement(subject, "http://data.parliament.uk/schema/parl#parent", RDF::URI.new(params[:parent])),
-        create_statement(subject, "http://data.parliament.uk/schema/parl#template", params[:template]),
-        create_statement(subject, "http://data.parliament.uk/schema/parl#text", params[:new_text])
-    ]
-    update_graph(statemtents_to_add, true)
-    DB.reload
-    redirect_to root_path
-  end
 
   def show
     path = normalize_path
@@ -57,7 +130,6 @@ class PagesController < ApplicationController
 
     rescue ActionController::RoutingError
       find_and_render('404')
-      # raise ActionController::RoutingError.new('Not Found')
     end
   end
 
@@ -83,4 +155,5 @@ class PagesController < ApplicationController
 
     page_class.new(page, self)
   end
+
 end
