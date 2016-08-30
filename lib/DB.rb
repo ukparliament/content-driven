@@ -134,23 +134,6 @@ class DB
     page
   end
 
-  # def self.find_templates
-  #   graph = self.query('
-  #             PREFIX parl: <http://data.parliament.uk/schema/parl#>
-  #             CONSTRUCT {
-  #                  _:x parl:template ?template
-  #             }
-  #             WHERE {
-  #                 SELECT DISTINCT ?template WHERE {
-  #                 ?s parl:template ?template .
-  #               }
-  #             }
-  #           ')
-  #   graph.subjects.map do |subject|
-  #     get_object(graph, subject, "http://data.parliament.uk/schema/parl#template").to_s
-  #   end
-  # end
-
   def self.find_templates
     matched_files = Dir.glob("#{Rails.root}/app/views/templates/*")
     matched_files.map { |file| File.basename(file).sub('.erb', '') }
