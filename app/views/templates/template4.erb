@@ -1,0 +1,14 @@
+<% render partial: 'shared/title', locals: { title: current_page[:title] }%>
+
+<h5>I am template number 4 for "<%= current_page[:slug] %>"</h5>
+
+<p><%= current_page[:text] %></p>
+
+<%= link_to root_path + "edit_page?current_path=#{current_page[:slug]}" do %>
+    Edit
+<% end %>
+<br>
+
+<%= link_to root_path + "delete_page?current_path=#{current_page[:slug]}" do %>
+    Delete
+<% end %>
