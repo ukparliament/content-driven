@@ -1,0 +1,20 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "DataDriven",
+      "image": "ukpds/data-driven",
+      "cpu": 10,
+      "memory": 512,
+      "essential": true,
+      "command": [],
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ],
+  "family": "DataDriven"
+}
