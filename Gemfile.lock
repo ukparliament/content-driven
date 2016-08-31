@@ -57,6 +57,7 @@ GEM
       activesupport (>= 4.1.0)
     i18n (0.7.0)
     json (1.8.3)
+    libv8 (3.16.14.15)
     link_header (0.0.8)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -71,6 +72,9 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    passenger (5.0.28)
+      rack
+      rake (>= 0.8.1)
     pkg-config (1.1.7)
     rack (1.6.4)
     rack-test (0.6.3)
@@ -109,6 +113,7 @@ GEM
       rdf (~> 1.99)
     rdf-xsd (1.99.0)
       rdf (~> 1.99)
+    ref (2.0.0)
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -146,6 +151,9 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sxp (0.1.5)
+    therubyracer (0.12.2)
+      libv8 (~> 3.16.14.0)
+      ref
     thor (0.19.1)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
@@ -159,12 +167,14 @@ PLATFORMS
 DEPENDENCIES
   byebug
   capybara
+  passenger
   rails (= 4.2.6)
   rdf
   rdf-turtle
   rspec-rails
   sparql
   spring
+  therubyracer
 
 BUNDLED WITH
    1.12.2

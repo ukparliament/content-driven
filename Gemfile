@@ -22,3 +22,7 @@ group :test do
   gem 'rspec-rails'
   gem 'capybara'
 end
+
+# Gems required for Docker containers
+gem 'passenger'
+gem 'therubyracer'
