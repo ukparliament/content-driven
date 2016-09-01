@@ -9,6 +9,13 @@ class PageBase
   def render
     @controller.render 'templates/' + @page[:template], locals: {current_page: @page}
   end
+
+  protected
+
+  def generate_parents_drop_down_data
+    parents = DB.potential_parents
+    parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+  end
 end
 
 module A
@@ -31,8 +38,6 @@ module A
       super(page, controller)
       @new_page = { }
       @templates = DB.find_templates
-      # parents = DB.potential_parents
-      # @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
       if @controller.request.post?
         page = @controller.generate_new_page(@controller.params)
         statements_to_add = @controller.generate_statements(page)
@@ -42,8 +47,7 @@ module A
     end
 
     def render
-      parents = DB.potential_parents
-      @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
+      @parents_dropdown_data = generate_parents_drop_down_data
       @controller.render 'templates/' + @page[:template], locals: { page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
   end
@@ -54,9 +58,6 @@ module A
       if @controller.request.get?
         current_path = @controller.params[:current_path]
         @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
-        @templates = DB.find_templates
-        parents = DB.potential_parents
-        @parents_dropdown_data = parents.map { |parent| [ parent[:title], parent[:uri] ] }.to_h
       end
 
       if @controller.request.post?
@@ -68,15 +69,15 @@ module A
         statements_to_add = @controller.generate_statements(new_page)
         @controller.update_graph(statements_to_add, true)
         DB.reload
+        @current_page = DB.find_page_from_database(new_page[:uri])
       end
+
+      @templates = DB.find_templates
+      @parents_dropdown_data = generate_parents_drop_down_data
     end
 
     def render
-      if @controller.request.post?
-        @controller.redirect_to @controller.root_path
-      else
-        @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
-      end
+      @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
   end
 end
