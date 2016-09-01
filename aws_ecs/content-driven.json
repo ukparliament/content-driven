@@ -1,8 +1,8 @@
 {
   "containerDefinitions": [
     {
-      "name": "DataDriven",
-      "image": "ukpds/data-driven",
+      "name": "ContentDriven",
+      "image": "ukpds/content-driven",
       "cpu": 10,
       "memory": 512,
       "essential": true,
@@ -16,5 +16,5 @@
       ]
     }
   ],
-  "family": "DataDriven"
+  "family": "ContentDriven"
 }
