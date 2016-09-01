@@ -37,7 +37,6 @@ module A
     def initialize(page, controller)
       super(page, controller)
       @new_page = { }
-      @templates = DB.find_templates
       if @controller.request.post?
         page = @controller.generate_new_page(@controller.params)
         statements_to_add = @controller.generate_statements(page)
@@ -47,6 +46,7 @@ module A
     end
 
     def render
+      @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
       @controller.render 'templates/' + @page[:template], locals: { page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
@@ -71,12 +71,11 @@ module A
         DB.reload
         @current_page = DB.find_page_from_database(new_page[:uri])
       end
-
-      @templates = DB.find_templates
-      @parents_dropdown_data = generate_parents_drop_down_data
     end
 
     def render
+      @templates = DB.find_templates
+      @parents_dropdown_data = generate_parents_drop_down_data
       @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
   end
