@@ -36,7 +36,7 @@ module A
   class AddPage < PageBase
     def initialize(page, controller)
       super(page, controller)
-      @new_page = { }
+      @page = { }
       if @controller.request.post?
         page = @controller.generate_new_page(@controller.params)
         statements_to_add = @controller.generate_statements(page)
@@ -48,7 +48,7 @@ module A
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      @controller.render 'templates/' + @page[:template], locals: { page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      @controller.render 'templates/' + @page[:template], locals: { page: @page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
   end
 
@@ -57,7 +57,7 @@ module A
       super(page, controller)
       if @controller.request.get?
         current_path = @controller.params[:current_path]
-        @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+        @page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
       end
 
       if @controller.request.post?
@@ -69,14 +69,14 @@ module A
         statements_to_add = @controller.generate_statements(new_page)
         @controller.update_graph(statements_to_add, true)
         DB.reload
-        @current_page = DB.find_page_from_database(new_page[:uri])
+        @page = DB.find_page_from_database(new_page[:uri])
       end
     end
 
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      @controller.render 'templates/' + @page[:template], locals: { page: @current_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      @controller.render 'templates/' + @page[:template], locals: { page: @page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
     end
   end
 end
