@@ -1,5 +1,9 @@
-<p>Delete <%= "#{page[:title]}?" %></p>
-<%= form_tag do %>
-    <%= hidden_field_tag('uri', page[:uri]) %>
-  <%= submit_tag('Delete') %>
+<% if delete_page.nil? %>
+    <p>The page has been deleted successfully.</p>
+<% else %>
+  <p>Delete <%= "#{delete_page[:title]}?" %></p>
+  <%= form_tag do %>
+      <%= hidden_field_tag('uri', delete_page[:uri]) %>
+    <%= submit_tag('Delete') %>
+  <% end %>
 <% end %>
