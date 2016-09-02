@@ -55,7 +55,7 @@ module A
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      locals = { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      locals = { title: @page[:title], new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
       super(locals)
     end
   end
@@ -83,7 +83,7 @@ module A
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      locals = { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      locals = { title: @page[:title], new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
       super(locals)
     end
   end
