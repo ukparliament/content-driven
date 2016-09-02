@@ -60,9 +60,10 @@ module A
     end
   end
 
-  class EditPage < PageBase
+  class EditPage < AddPage
     def initialize(page, controller)
-      super(page, controller)
+      @page = page
+      @controller = controller
       if @controller.request.get?
         new_path = @controller.params[:current_path]
         @new_page = DB.find_page_from_database("http://id.ukpds.org/#{new_path}")
@@ -78,13 +79,6 @@ module A
         @controller.update_graph(statements_to_add, true)
         DB.reload
       end
-    end
-
-    def render
-      @templates = DB.find_templates
-      @parents_dropdown_data = generate_parents_drop_down_data
-      locals = { title: @page[:title], new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
-      super(locals)
     end
   end
 
