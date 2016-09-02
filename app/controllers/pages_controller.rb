@@ -6,9 +6,16 @@ class PageBase
     @controller = controller
   end
 
-  def render
-    @controller.render 'templates/' + @page[:template], locals: {current_page: @page}
+  def render(locals=nil, status=nil)
+    locals = locals || { }
+    locals[:current_page] = @page
+    if(status.nil?)
+      @controller.render 'templates/' + @page[:template], locals: locals
+    else
+      @controller.render 'templates/' + @page[:template], locals: locals, status: status
+    end
   end
+
 
   protected
 
@@ -29,17 +36,17 @@ module A
 
   class NotFound < PageBase
     def render
-      @controller.render 'templates/' + @page[:template], locals: {current_page: @page}, status: 404
+      super(nil, 404)
     end
   end
 
   class AddPage < PageBase
     def initialize(page, controller)
       super(page, controller)
-      @page = { }
+      @new_page = { }
       if @controller.request.post?
-        page = @controller.generate_new_page(@controller.params)
-        statements_to_add = @controller.generate_statements(page)
+        @new_page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(@new_page)
         @controller.update_graph(statements_to_add, true)
         DB.reload
       end
@@ -48,7 +55,8 @@ module A
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      @controller.render 'templates/' + @page[:template], locals: { page: @page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      locals = { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      super(locals)
     end
   end
 
@@ -56,27 +64,27 @@ module A
     def initialize(page, controller)
       super(page, controller)
       if @controller.request.get?
-        current_path = @controller.params[:current_path]
-        @page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+        new_path = @controller.params[:current_path]
+        @new_page = DB.find_page_from_database("http://id.ukpds.org/#{new_path}")
       end
 
       if @controller.request.post?
-        current_page = DB.find_page_from_database(@controller.params[:uri])
-        statements_to_delete = @controller.generate_statements(current_page)
+        delete_page = DB.find_page_from_database(@controller.params[:uri])
+        statements_to_delete = @controller.generate_statements(delete_page)
         @controller.update_graph(statements_to_delete, false)
 
-        new_page = @controller.generate_new_page(@controller.params)
-        statements_to_add = @controller.generate_statements(new_page)
+        @new_page = @controller.generate_new_page(@controller.params)
+        statements_to_add = @controller.generate_statements(@new_page)
         @controller.update_graph(statements_to_add, true)
         DB.reload
-        @page = DB.find_page_from_database(new_page[:uri])
       end
     end
 
     def render
       @templates = DB.find_templates
       @parents_dropdown_data = generate_parents_drop_down_data
-      @controller.render 'templates/' + @page[:template], locals: { page: @page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      locals = { new_page: @new_page, templates: @templates, parents_dropdown_data: @parents_dropdown_data }
+      super(locals)
     end
   end
 end
@@ -85,15 +93,15 @@ class DeletePage < PageBase
   def initialize(page, controller)
     super(page, controller)
     if @controller.request.get?
-      current_path = @controller.params[:current_path]
-      @current_page = DB.find_page_from_database("http://id.ukpds.org/#{current_path}")
+      delete_path = @controller.params[:current_path]
+      @delete_page = DB.find_page_from_database("http://id.ukpds.org/#{delete_path}")
     end
 
     if @controller.request.post?
-      current_page = DB.find_page_from_database(@controller.params[:uri])
-      DB.tree(current_page)
+      delete_page = DB.find_page_from_database(@controller.params[:uri])
+      DB.tree(delete_page)
 
-      delete_page_and_children(current_page)
+      delete_page_and_children(delete_page)
 
       DB.reload
     end
@@ -113,11 +121,8 @@ class DeletePage < PageBase
   end
 
   def render
-    if @controller.request.post?
-      @controller.redirect_to @controller.root_path
-    else
-      @controller.render 'templates/' + @page[:template], locals: { page: @current_page }
-    end
+    locals = { delete_page: @delete_page}
+    super(locals)
   end
 end
 

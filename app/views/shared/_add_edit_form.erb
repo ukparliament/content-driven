@@ -1,12 +1,12 @@
 <%= form_tag do %>
-    <%= hidden_field_tag('uri', page[:uri]) %>
+    <%= hidden_field_tag('uri', new_page[:uri]) %>
     <label>
       Slug:
-      <%= text_field_tag('slug', page[:slug]) %>
+      <%= text_field_tag('slug', new_page[:slug]) %>
     </label>
     <label>
       Title:
-      <%= text_field_tag 'title', page[:title] %>
+      <%= text_field_tag 'title', new_page[:title] %>
     </label>
     <%= label_tag(:parent, 'Parent') %>
     <%= select_tag(:parent, options_for_select(parents_dropdown_data, 'http://id.ukpds.org/root')) %>
@@ -14,7 +14,7 @@
     <%= select_tag(:template, options_for_select(templates)) %>
     <label>
       Text:
-      <%= text_field_tag 'text', page[:text] %>
+      <%= text_field_tag 'text', new_page[:text] %>
     </label>
 
     <%= submit_tag("Save Page") %>
