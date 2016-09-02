@@ -87,42 +87,42 @@ module A
       super(locals)
     end
   end
-end
 
-class DeletePage < PageBase
-  def initialize(page, controller)
-    super(page, controller)
-    if @controller.request.get?
-      delete_path = @controller.params[:current_path]
-      @delete_page = DB.find_page_from_database("http://id.ukpds.org/#{delete_path}")
-    end
+  class DeletePage < PageBase
+    def initialize(page, controller)
+      super(page, controller)
+      if @controller.request.get?
+        delete_path = @controller.params[:current_path]
+        @delete_page = DB.find_page_from_database("http://id.ukpds.org/#{delete_path}")
+      end
 
-    if @controller.request.post?
-      delete_page = DB.find_page_from_database(@controller.params[:uri])
-      DB.tree(delete_page)
+      if @controller.request.post?
+        delete_page = DB.find_page_from_database(@controller.params[:uri])
+        DB.tree(delete_page)
 
-      delete_page_and_children(delete_page)
+        delete_page_and_children(delete_page)
 
-      DB.reload
-    end
-  end
-
-  def delete_page_and_children(page)
-    if page[:children].empty?
-      statements_to_delete = @controller.generate_statements(page)
-      @controller.update_graph(statements_to_delete, false)
-    else
-      page[:children].each do |child_page|
-        delete_page_and_children(child_page)
+        DB.reload
       end
     end
-    statements_to_delete = @controller.generate_statements(page)
-    @controller.update_graph(statements_to_delete, false)
-  end
 
-  def render
-    locals = { delete_page: @delete_page}
-    super(locals)
+    def render
+      locals = { delete_page: @delete_page}
+      super(locals)
+    end
+
+    def delete_page_and_children(page)
+      if page[:children].empty?
+        statements_to_delete = @controller.generate_statements(page)
+        @controller.update_graph(statements_to_delete, false)
+      else
+        page[:children].each do |child_page|
+          delete_page_and_children(child_page)
+        end
+      end
+      statements_to_delete = @controller.generate_statements(page)
+      @controller.update_graph(statements_to_delete, false)
+    end
   end
 end
 
