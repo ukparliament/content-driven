@@ -5,7 +5,7 @@ require "action_controller/railtie"
 require "action_view/railtie"
 require 'action_mailer/railtie'
 
-DATABASE = 'http://graphdbtest.eastus.cloudapp.azure.com/repositories/DataDriven06'
+DATABASE = 'http://13.95.91.76/repositories/DataDriven'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
