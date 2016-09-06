@@ -1,0 +1,38 @@
+<style>
+  .card {
+    border: 5px solid darkred;
+    padding: 15px;
+    background-color: rgba(205, 92, 92, 0.5);
+    font-size: 18px;
+    font-family: cursive;
+    margin: 30px;
+  }
+
+    .lords_heading {
+      color: darkred;
+    }
+
+    .lords_link {
+      font-size: 18px;
+      margin: 30px;
+    }
+
+</style>
+
+<% render partial: 'shared/title', locals: { title: current_page[:title] }%>
+
+<div class="card">
+  <h1 class="lords_heading">Lords card</h1>
+  <h3>I am the template for "<%= current_page[:slug] %>"</h3>
+
+  <p><%= current_page[:text] %></p>
+</div>
+
+<%= link_to root_path + "edit_page?current_path=#{current_page[:slug]}", class: "lords_link" do %>
+    Edit
+<% end %>
+<br>
+
+<%= link_to root_path + "delete_page?current_path=#{current_page[:slug]}", class: "lords_link" do %>
+    Delete
+<% end %>
