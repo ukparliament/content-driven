@@ -13,7 +13,14 @@
           "containerPort": 3000,
           "protocol": "tcp"
         }
-      ]
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "ContentDriven",
+          "awslogs-region": "eu-west-1"
+        }
+      }
     }
   ],
   "family": "ContentDriven"
