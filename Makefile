@@ -39,6 +39,7 @@ test :
 	docker-compose down
 
 push: build
+	eval $(aws ecs login --region eu-west-1)
 	docker push $(IMAGE):$(VERSION)
 	docker push $(IMAGE):latest
 	docker rmi $(IMAGE):$(VERSION)
