@@ -1,4 +1,4 @@
-IMAGE = ukpds/content-driven
+IMAGE = 165162103257.dkr.ecr.eu-west-1.amazonaws.com/contentdriven
 
 # GO_PIPELINE_COUNTER is the pipeline number, passed from our build agent.
 GO_PIPELINE_COUNTER?="unknown"
@@ -39,9 +39,9 @@ test :
 	docker-compose down
 
 push: build
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):latest
-	docker rmi $(IMAGE):$(VERSION)
+	docker push $(IMAGE):$(VERSION) && \
+	docker push $(IMAGE):latest && \
+	docker rmi $(IMAGE):$(VERSION) && \
 	docker rmi $(IMAGE):latest
 
 deploy-ci:
